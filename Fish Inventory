@@ -1,0 +1,33 @@
+CREATE TABLE fish (id INTEGER PRIMARY KEY, species TEXT, cut TEXT, price INTEGER, weight INTEGER);
+
+INSERT INTO fish VALUES
+(1, "sablefish", "frozen", 12.50, 6),
+(2, "trout", "fillet", 18.99, 10),
+(3, "salmon", "portion", 32.05, 18),
+(4, "seabass", "fillet", 40.10, 6),
+(5, "sturgeon", "caviar", 80.89, 2),
+(6, "tilapia", "fillet", 5.60, 6),
+(7, "catfish", "jcut", 4.89, 8),
+(8, "halibut", "whole", 90.10, 200),
+(9, "sablefish", "collar", 1.20, 1),
+(10, "lingcod", "fillet", 15.55, 10),
+(11, "snapper", "whole", 19.99, 7),
+(12, "parrotfish", "frozen", 5.75, 7),
+(13, "hake", "processed", 3.20, 17),
+(14, "cod", "whole", 18.99, 25),
+(15, "barramundi", "jcut", 3.50, 10);
+
+-- Display the database ordered by price.
+SELECT * from fish
+ORDER BY price desc;
+
+-- What is the total price of all fillet cuts?
+SELECT SUM(price) "total price" 
+FROM fish
+WHERE cut="fillet";
+
+-- What are the 5 heaviest items?
+SELECT species, weight
+FROM fish
+ORDER BY weight desc
+LIMIT 5;
