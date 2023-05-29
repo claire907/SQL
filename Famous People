@@ -1,0 +1,51 @@
+CREATE TABLE famous_people (id INTEGER PRIMARY KEY, person_id INTEGER, fullname TEXT, industry TEXT, nationality TEXT, age INTEGER);
+
+INSERT INTO famous_people VALUES (1, 1, "Brad Pitt", "film", "American", 55);
+INSERT INTO famous_people VALUES (2, 2, "Angelina Jolie", "film", "American", 48);
+INSERT INTO famous_people VALUES (3, 3, "Timothy Chalamee", "film", "American", 20);
+INSERT INTO famous_people VALUES (4, 4, "Justin Bieber", "music", "Canadian", 22);
+INSERT INTO famous_people VALUES (5, 5, "Adele", "music", "English", 35);
+INSERT INTO famous_people VALUES (6, 6, "Stephen King", "writing", "American", 67);
+INSERT INTO famous_people VALUES (7, 7, "Terry Pratchet", "writing", "English", 76);
+INSERT INTO famous_people VALUES (8, 8, "Vanessa Paradis", "music", "French", 42);
+INSERT INTO famous_people VALUES (9, 9, "Pedro Pascale", "film", "Chilean", 55);
+INSERT INTO famous_people VALUES (10, 10, "Britney Spears", "music", "American", 37);
+
+SELECT * FROM famous_people;
+
+CREATE TABLE movies (id INTEGER PRIMARY KEY, moviestar_id INTEGER,  fullname TEXT, title TEXT, year INTEGER);
+INSERT INTO movies VALUES (1, 2, "Angelina Jolie", "Mr and Mrs Smith", 2002);
+INSERT INTO movies VALUES (2, 1, "Brad Pitt", "Mr and Mrs Smith", 2002);
+INSERT INTO movies VALUES (3, 1, "Brad Pitt", "Thousand Years in Tibet", 1999);
+INSERT INTO movies VALUES (4, 9, "Pedro Pascale", "Game of Thrones", 2012);
+INSERT INTO movies VALUES (5, 3, "Timothy Chalamee", "Dune", 2022);
+
+CREATE TABLE songs (id INTEGER PRIMARY KEY, singer_id INTEGER, fullname TEXT, song TEXT, year INTEGER);
+INSERT INTO songs VALUES (1, 4, "Justin Bieber", "Baby", 2010);
+INSERT INTO songs VALUES (2, 5, "Adele", "Rolling in the Deep", 2011);
+INSERT INTO songs VALUES (3, 8, "Vanessa Paradis", "Commando", 2009);
+INSERT INTO songs VALUES (4, 4, "Justin Bieber", "Peaches", 2021);
+INSERT INTO songs VALUES (5, 10, "Britney Spears", "Toxic", 2003);
+
+CREATE TABLE books (id INTEGER PRIMARY KEY, author_ID INTEGER, fullname TEXT, book_title TEXT, year INTEGER);
+INSERT INTO books VALUES (1, 6, "Stephen King", "It", 1986);
+INSERT INTO books VALUES (2, 7, "Terry Pratchet", "Equal Rites", 1987);
+INSERT INTO books VALUES (3, 6, "Stephen King", "Pet Sematary", 1983);
+INSERT INTO books VALUES (4, 7, "Terry Pratchet", "Night Watch", 2002);
+
+-- Order famous people by ascending age
+SELECT age, fullname from famous_people ORDER BY age asc;
+
+-- Which famous people over the age of 40 are singers?
+SELECT fullname FROM famous_people WHERE age>40 AND industry = "music";
+
+--Create a list of all Americans and the title of their song, movie, or book they are associated with.
+SELECT famous_people.fullname, movies.title AS movie_title, songs.song, books.book_title
+FROM famous_people
+LEFT JOIN movies 
+ON famous_people.fullname = movies.fullname
+LEFT JOIN songs
+ON famous_people.fullname = songs.fullname
+LEFT JOIN books
+ON famous_people.fullname = books.fullname
+WHERE nationality = "American";
