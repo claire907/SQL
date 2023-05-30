@@ -1,0 +1,47 @@
+CREATE TABLE garmin 
+(id INTEGER PRIMARY KEY, date TEXT, activity  TEXT, speed INTEGER, distance INTEGER, heart_rate INTEGER);
+
+INSERT INTO garmin VALUES (1, "5 May", "Hike", 5, 18, 167);
+INSERT INTO garmin VALUES (2, "11 May", "Bike", 19, 25, 140);
+INSERT INTO garmin VALUES (3, "1 June", "Walk", 2, 30, 100);
+INSERT INTO garmin VALUES (4, "6 June", "Swim", 12, 0.75, 110);
+INSERT INTO garmin VALUES (5, "13 June", "Hike", 6, 9, 180);
+INSERT INTO garmin VALUES (6, "29 June", "Weights", 0, 0, 97);
+INSERT INTO garmin VALUES (7, "15 July", "Hike", 8, 13, 175);
+INSERT INTO garmin VALUES (8, "24 July", "Swim", 13, 1, 100);
+INSERT INTO garmin VALUES (9, "2 August", "Walk", 3, 21, 65);
+INSERT INTO garmin VALUES (10, "10 August", "Bike", 15, 20, 157);
+
+SELECT * FROM garmin;
+
+-- Add a column for user names --
+ALTER TABLE garmin
+ADD username TEXT default "unknown";
+SELECT * FROM garmin;
+
+-- Add user name "Daniel" for all bike activities and user name "Ciara" for all other activities--
+UPDATE garmin SET username = "David" WHERE activity = "Bike";
+UPDATE garmin SET username = "Ciara" WHERE activity != "Bike";
+SELECT * FROM garmin;
+
+-- Show Ciara's maximum heart rate and the activity it is associated with --
+SELECT MAX(heart_rate), activity from garmin
+WHERE username = "Ciara";
+
+-- Show each user's average heart rate --
+SELECT AVG(heart_rate), username FROM garmin
+GROUP BY username;
+
+-- Show number of times that each user hiked.--
+SELECT COUNT(Activity), username FROM garmin
+WHERE activity = "Hike"
+GROUP BY username;
+
+-- Delete the walks from the table --
+DELETE FROM garmin
+WHERE activity = "Walk";
+SELECT * FROM garmin;
+
+-- Organize the entries by heartrate in descending order --
+SELECT * FROM garmin
+ORDER BY heart_rate desc;
