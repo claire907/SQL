@@ -1,0 +1,139 @@
+This database has 11 tables in it that a music shop would use to keep track of its employees, customers, albums, invoices, etc. Here are some queries of the database.
+
+
+-- Show customers (full names, customer ID, country) who are not in the US
+SELECT FirstName, LastName, CustomerID, Country
+FROM customers
+WHERE Country <> 'USA';
+
+-- Show only customers from Brazil.
+SELECT *
+FROM customers
+WHERE Country = 'Brazil';
+
+-- Find the invoices of customers who are from Brazil. The resulting table should show the customer's full name, invoice ID, date of the invoice, and billing country.
+SELECT customers.FirstName, customers.Lastname, invoices.invoiceid, invoices.invoicedate, invoices.BillingCountry
+FROM invoices
+LEFT JOIN customers
+ON customers.Customerid = invoices.CustomerId
+WHERE invoices.BillingCountry = 'Brazil';
+
+-- Show the employees who are sales agents.
+SELECT * 
+FROM employees
+WHERE title = 'Sales Support Agent';
+
+-- Find a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT BillingCountry
+FROM invoices;
+
+-- Provide a query that shows the invoices associated with each sales agent. The resulting table should include the sales agent's full name.
+SELECT invoices.invoiceid, employees.firstname, employees.lastname
+FROM invoices
+LEFT JOIN customers
+ON invoices.customerid=customers.customerid
+LEFT JOIN employees
+ON customers.supportrepid=employees.employeeid;
+
+-- Show the invoice total, customer name, country, and sales agent for all invoices and customers.
+SELECT customers.FirstName as customer_FN, customers.LastName as customer_LN, customers.Country, employees.FirstName as employee_FN, employees.LastName as employee_LN, invoices.total
+FROM invoices
+JOIN customers
+ON invoices.customerid=customers.customerid
+JOIN employees
+ON customers.supportrepid=employees.EmployeeId
+WHERE employees.title = 'Sales Support Agent';
+
+-- How many invoices were there in 2009?
+SELECT COUNT (*)
+FROM invoices
+WHERE InvoiceDate LIKE '2009%';
+
+-- What are the total sales for 2009?
+SELECT SUM(Total)
+FROM invoices
+WHERE InvoiceDate LIKE '2009%';
+
+-- Write a query that includes the purchased track name with each invoice line ID.
+SELECT tracks.name, invoice_items.InvoiceLineId
+FROM invoice_items
+LEFT JOIN tracks
+ON invoice_items.trackid=tracks.trackid;
+
+-- Write a query that includes the purchased track name and artist name with each invoice line ID.
+SELECT tracks.name, artists.name, invoice_items.InvoiceLineId
+FROM invoice_items
+LEFT JOIN tracks
+ON tracks.trackid=invoice_items.trackid
+INNER JOIN albums
+ON albums.albumid=tracks.AlbumId
+LEFT JOIN artists
+ON artists.artistid=albums.artistid;
+
+-- Provide a query that shows all the tracks, and include the album name, media type, and genre.
+SELECT tracks.name as track, albums.title as album, media_types.name as media, genres.Name as genre
+FROM tracks
+JOIN albums
+ON tracks.albumid=albums.albumid
+JOIN media_types
+ON media_types.mediatypeid=tracks.MediaTypeId
+JOIN genres 
+ON genres.genreid=tracks.genreid;
+
+-- Show the total sales made by each sales agent.
+SELECT employees.FirstName, employees.LastName, ROUND(SUM(invoices.total), 2) as total_sales 
+FROM invoices
+LEFT JOIN customers
+ON invoices.customerid=customers.customerid
+LEFT JOIN employees
+ON customers.supportrepid=employees.employeeid
+WHERE employees.title = 'Sales Support Agent'
+GROUP BY employees.employeeid;
+
+-- Which sales agent made the most dollars in sales in 2009?
+WITH cte as 
+(SELECT employees.FirstName, employees.LastName, ROUND(SUM(invoices.total), 2) as total_sales 
+FROM invoices
+LEFT JOIN customers
+ON invoices.customerid=customers.customerid
+LEFT JOIN employees
+ON customers.supportrepid=employees.employeeid
+WHERE employees.title = 'Sales Support Agent' AND invoices.invoicedate LIKE '2009%'
+GROUP BY employees.employeeid)
+
+SELECT cte.firstname, cte.lastname, cte.total_sales
+FROM cte
+ORDER BY total_sales desc
+LIMIT 1;
+
+-- Show total sales for each year.
+SELECT MAX (invoicedate) FROM invoices
+SELECT MIN (invoicedate) FROM invoices
+
+SELECT ROUND(SUM(invoices.total), 2) as 'Total Sales', '2009' as Year
+FROM invoices
+WHERE invoices.invoicedate LIKE '2009%'
+
+UNION
+
+SELECT ROUND(SUM(invoices.total), 2) as 'Total Sales', '2010' as Year
+FROM invoices
+WHERE invoices.invoicedate LIKE '2010%'
+
+UNION
+
+SELECT ROUND(SUM(invoices.total), 2) as 'Total Sales', '2011' as Year
+FROM invoices
+WHERE invoices.invoicedate LIKE '2011%'
+
+UNION
+
+SELECT ROUND(SUM(invoices.total), 2) as 'Total Sales', '2012' as Year
+FROM invoices
+WHERE invoices.invoicedate LIKE '2012%'
+
+UNION
+
+SELECT ROUND(SUM(invoices.total), 2) as 'Total Sales', '2013' as Year
+FROM invoices
+WHERE invoices.invoicedate LIKE '2013%';
